@@ -1,0 +1,6 @@
+{
+  "name": "hivejdbcreader",
+  "class": "com.alibaba.datax.plugin.reader.hivejdbcreader.HiveJdbcReader",
+  "description": "useScene: test. mechanism: use datax framework to transport data from hdfs. warn: The more you know about the data, the less problems you encounter.",
+  "developer": "leoguo"
+}

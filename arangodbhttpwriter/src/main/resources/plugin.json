@@ -1,0 +1,6 @@
+{
+  "name": "arangodbhttpwriter",
+  "class": "com.alibaba.datax.plugin.writer.arangodbhttpwriter.ArangodbHttpWriter",
+  "description": "useScene: test. mechanism: use datax framework to write data for arangodb. warn: The more you know about the data, the less problems you encounter.",
+  "developer": "leoguo"
+}

@@ -1,0 +1,44 @@
+{
+    "name": "hbase11xwriter",
+    "parameter": {
+        "hbaseConfig": {
+            "hbase.rootdir": "/hbase",
+            "hbase.cluster.distributed": true,
+            "hbase.zookeeper.quorum": "hadoop01.sz.haizhi.com:2181,hadoop01.sz.haizhi.com:2181,hadoop01.sz.haizhi.com:2181"
+        },
+        "table": "aidp:test",
+        "mode": "normal",
+        "rowkeyColumn": [
+            {
+                "index":0,
+                "type": "string"
+            },
+            {
+                "index":1,
+                "type": "string"
+            },
+            {
+                "index":-1,
+                "type": "string",
+                "value": "_"
+            }
+        ],
+        "column": [
+            {
+                "index":2,
+                "name": "e:id",
+                "type": "string"
+            },
+            {
+                "index":3,
+                "name": "e:name",
+                "type": "string"
+            }
+        ],
+        "versionColumn":{
+            "index": -1,
+            "value":"123456"
+        },
+        "encoding": "utf-8"
+    }
+}

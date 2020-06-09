@@ -37,6 +37,8 @@ public final class Key {
 
     public static final String FORMAT = "format";
 
+    public static final String SEQUENCE = "sequence";
+
     /**
      * 默认为 EMPTY_BYTES
      */

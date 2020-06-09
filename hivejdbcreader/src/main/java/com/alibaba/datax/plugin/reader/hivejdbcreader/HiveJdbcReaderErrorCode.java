@@ -16,7 +16,7 @@ public enum HiveJdbcReaderErrorCode implements ErrorCode {
     KERBEROS_LOGIN_ERROR("HiveJdbcReader-10", "KERBEROS认证失败"),
     UNSUPPORTED_TYPE("HiveJdbcReader-11", "不支持的数据库类型. 请注意查看 DataX 已经支持的数据库类型以及数据库版本."),
     HIVE_EXECUTE("HiveJdbcReader-12", "HiveSql执行异常"),
-    KERBEROS_INIT_ERROR("HiveJdbcReader-13", "k8s初始化失败，触发了IO异常。");
+    KERBEROS_INIT_ERROR("HiveJdbcReader-13", "kerberos初始化失败，触发了IO异常。");
 
     private final String code;
     private final String description;

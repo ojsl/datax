@@ -15,6 +15,8 @@ public class ESColumn {
 
     private Boolean array;
 
+    private int index;
+
     public void setName(String name) {
         this.name = name;
     }
@@ -31,12 +33,20 @@ public class ESColumn {
         this.format = format;
     }
 
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     public String getName() {
         return name;
     }
 
     public String getType() {
         return type;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public String getTimezone() {

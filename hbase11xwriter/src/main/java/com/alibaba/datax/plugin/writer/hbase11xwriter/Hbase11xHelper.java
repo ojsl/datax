@@ -6,9 +6,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +43,35 @@ public class Hbase11xHelper {
         return hConfiguration;
     }
 
-    public static org.apache.hadoop.hbase.client.Connection getHbaseConnection(String hbaseConfig) {
+    public static org.apache.hadoop.hbase.client.Connection getHbaseConnection(Configuration configuration) {
+        String hbaseConfig = configuration.getString(Key.HBASE_CONFIG);
         org.apache.hadoop.conf.Configuration hConfiguration = Hbase11xHelper.getHbaseConfiguration(hbaseConfig);
+
+        /*hConfiguration.setInt(HConstants.HBASE_RPC_TIMEOUT_KEY, 200000);
+        hConfiguration.setInt(HConstants.HBASE_CLIENT_SCANNER_TIMEOUT_PERIOD, 200000);
+        hConfiguration.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 2000000);*/
+        hConfiguration.addResource(configuration.getString("hbasesite"));
+        hConfiguration.addResource(configuration.getString("hivesite"));
+        hConfiguration.addResource(configuration.getString("coresite"));
+
+        if(configuration.getBool("haveKerberos") != null &&
+                configuration.getBool("haveKerberos")){
+
+            String userKeytabFile = configuration.getString("kerberosKeytabFilePath");
+            String krb5File = configuration.getString("krb5conf");
+            String kerberosPrincipal = configuration.getString("kerberosPrincipal");
+
+            System.setProperty("java.security.krb5.conf", krb5File);
+            System.setProperty("zookeeper.server.principal", "zookeeper/hadoop");
+            try{
+                UserGroupInformation.setConfiguration(hConfiguration);
+                UserGroupInformation.loginUserFromKeytab(kerberosPrincipal, userKeytabFile);
+            }catch (IOException e){
+                throw DataXException.asDataXException(Hbase11xWriterErrorCode.KERBEROS_INIT_ERROR, e);
+            }
+            LOG.info("kerberos认证成功！");
+
+        }
 
         org.apache.hadoop.hbase.client.Connection hConnection = null;
         try {
@@ -59,7 +89,7 @@ public class Hbase11xHelper {
         String hbaseConfig = configuration.getString(Key.HBASE_CONFIG);
         String userTable = configuration.getString(Key.TABLE);
         long writeBufferSize = configuration.getLong(Key.WRITE_BUFFER_SIZE, Constant.DEFAULT_WRITE_BUFFER_SIZE);
-        org.apache.hadoop.hbase.client.Connection hConnection = Hbase11xHelper.getHbaseConnection(hbaseConfig);
+        org.apache.hadoop.hbase.client.Connection hConnection = Hbase11xHelper.getHbaseConnection(configuration);
         TableName hTableName = TableName.valueOf(userTable);
         org.apache.hadoop.hbase.client.Admin admin = null;
         org.apache.hadoop.hbase.client.Table hTable = null;
@@ -83,7 +113,7 @@ public class Hbase11xHelper {
         String userTable = configuration.getString(Key.TABLE);
         long writeBufferSize = configuration.getLong(Key.WRITE_BUFFER_SIZE, Constant.DEFAULT_WRITE_BUFFER_SIZE);
         org.apache.hadoop.conf.Configuration hConfiguration = Hbase11xHelper.getHbaseConfiguration(hbaseConfig);
-        org.apache.hadoop.hbase.client.Connection hConnection = Hbase11xHelper.getHbaseConnection(hbaseConfig);
+        org.apache.hadoop.hbase.client.Connection hConnection = Hbase11xHelper.getHbaseConnection(configuration);
         TableName hTableName = TableName.valueOf(userTable);
         org.apache.hadoop.hbase.client.Admin admin = null;
         BufferedMutator bufferedMutator = null;
@@ -130,7 +160,7 @@ public class Hbase11xHelper {
         String userTable = configuration.getString(Key.TABLE);
         LOG.info(String.format("由于您配置了 truncate 为true,HBasWriter begins to truncate table %s .", userTable));
         TableName hTableName = TableName.valueOf(userTable);
-        org.apache.hadoop.hbase.client.Connection hConnection = Hbase11xHelper.getHbaseConnection(hbaseConfig);
+        org.apache.hadoop.hbase.client.Connection hConnection = Hbase11xHelper.getHbaseConnection(configuration);
         org.apache.hadoop.hbase.client.Admin admin = null;
         try{
             admin = hConnection.getAdmin();

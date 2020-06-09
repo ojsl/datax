@@ -168,7 +168,7 @@ public class ArangodbHttpWriter extends Writer {
             }
             this.client = hcb.build();
 
-            if(!username.equalsIgnoreCase("")){
+            if(username != null && !username.equalsIgnoreCase("")){
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("username", this.username);
                 map.put("password", this.password);

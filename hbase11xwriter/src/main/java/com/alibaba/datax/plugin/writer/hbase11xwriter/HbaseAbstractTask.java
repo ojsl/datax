@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.NumberFormat;
 import java.util.List;
 
 public abstract class HbaseAbstractTask {
@@ -31,6 +32,7 @@ public abstract class HbaseAbstractTask {
     public String encoding;
     public Boolean walFlag;
     public BufferedMutator bufferedMutator;
+    private NumberFormat formatter;
 
 
     public HbaseAbstractTask(com.alibaba.datax.common.util.Configuration configuration) {
@@ -42,6 +44,7 @@ public abstract class HbaseAbstractTask {
         this.encoding = configuration.getString(Key.ENCODING,Constant.DEFAULT_ENCODING);
         this.nullMode = NullModeType.getByTypeName(configuration.getString(Key.NULL_MODE,Constant.DEFAULT_NULL_MODE));
         this.walFlag = configuration.getBool(Key.WAL_FLAG, false);
+        this.formatter = NumberFormat.getNumberInstance();
     }
 
     public void startWriter(RecordReceiver lineReceiver, TaskPluginCollector taskPluginCollector){
@@ -87,6 +90,7 @@ public abstract class HbaseAbstractTask {
 
     public byte[] getColumnByte(ColumnType columnType, Column column){
         byte[] bytes;
+
         if(column.getRawData() != null){
             switch (columnType) {
                 case INT:
@@ -109,6 +113,13 @@ public abstract class HbaseAbstractTask {
                     break;
                 case STRING:
                     bytes = this.getValueByte(columnType,column.asString());
+                    break;
+                case MD5M:
+                    long nu = Long.remainderUnsigned(Math.abs(column.asString().hashCode()),1000);
+                    formatter.setMinimumIntegerDigits(3);
+                    formatter.setGroupingUsed(false);
+                    String str = formatter.format(nu);
+                    bytes = this.getValueByte(ColumnType.STRING,str);
                     break;
                 default:
                     throw DataXException.asDataXException(Hbase11xWriterErrorCode.ILLEGAL_VALUE, "HbaseWriter列不支持您配置的列类型:" + columnType);

@@ -15,7 +15,8 @@ public enum ColumnType {
     INT("int"),
     LONG("long"),
     FLOAT("float"),
-    DOUBLE("double")
+    DOUBLE("double"),
+    MD5M("md5m")
     ;
 
     private String typeName;

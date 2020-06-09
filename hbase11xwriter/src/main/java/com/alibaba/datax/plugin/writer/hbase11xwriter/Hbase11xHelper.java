@@ -50,9 +50,10 @@ public class Hbase11xHelper {
         /*hConfiguration.setInt(HConstants.HBASE_RPC_TIMEOUT_KEY, 200000);
         hConfiguration.setInt(HConstants.HBASE_CLIENT_SCANNER_TIMEOUT_PERIOD, 200000);
         hConfiguration.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 2000000);*/
-        hConfiguration.addResource(configuration.getString("hbasesite"));
+
+        /*hConfiguration.addResource(configuration.getString("hbasesite"));
         hConfiguration.addResource(configuration.getString("hivesite"));
-        hConfiguration.addResource(configuration.getString("coresite"));
+        hConfiguration.addResource(configuration.getString("coresite"));*/
 
         if(configuration.getBool("haveKerberos") != null &&
                 configuration.getBool("haveKerberos")){

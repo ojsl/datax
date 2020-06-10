@@ -64,7 +64,7 @@
             <version>${commons-codec.version}</version>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>com.alibaba.hbase</groupId>
             <artifactId>alihbase-connector</artifactId>
             <version>1.0.4</version>
@@ -74,7 +74,7 @@
                     <artifactId>hbase-client</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>junit</groupId>

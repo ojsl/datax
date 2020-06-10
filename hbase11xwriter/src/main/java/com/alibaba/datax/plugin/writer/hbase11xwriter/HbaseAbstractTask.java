@@ -71,6 +71,8 @@ public abstract class HbaseAbstractTask {
                     }
                 }
             }
+            this.bufferedMutator.flush();
+            
         }catch (IOException e){
             throw DataXException.asDataXException(Hbase11xWriterErrorCode.PUT_HBASE_ERROR,e);
         }finally {
@@ -78,7 +80,6 @@ public abstract class HbaseAbstractTask {
             Hbase11xHelper.closeBufferedMutator(this.bufferedMutator);
         }
     }
-
 
     public abstract  Put convertRecordToPut(Record record);
 

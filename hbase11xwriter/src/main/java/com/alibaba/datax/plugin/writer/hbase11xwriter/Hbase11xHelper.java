@@ -47,13 +47,13 @@ public class Hbase11xHelper {
         String hbaseConfig = configuration.getString(Key.HBASE_CONFIG);
         org.apache.hadoop.conf.Configuration hConfiguration = Hbase11xHelper.getHbaseConfiguration(hbaseConfig);
 
-        /*hConfiguration.setInt(HConstants.HBASE_RPC_TIMEOUT_KEY, 200000);
+        hConfiguration.setInt(HConstants.HBASE_RPC_TIMEOUT_KEY, 200000);
         hConfiguration.setInt(HConstants.HBASE_CLIENT_SCANNER_TIMEOUT_PERIOD, 200000);
-        hConfiguration.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 2000000);*/
+        hConfiguration.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 2000000);
 
-        /*hConfiguration.addResource(configuration.getString("hbasesite"));
-        hConfiguration.addResource(configuration.getString("hivesite"));
-        hConfiguration.addResource(configuration.getString("coresite"));*/
+        hConfiguration.addResource(configuration.getString("hbasesite"));
+        hConfiguration.addResource(configuration.getString("hdfssite"));
+        hConfiguration.addResource(configuration.getString("coresite"));
 
         if(configuration.getBool("haveKerberos") != null &&
                 configuration.getBool("haveKerberos")){
@@ -120,7 +120,7 @@ public class Hbase11xHelper {
         BufferedMutator bufferedMutator = null;
         try {
             admin = hConnection.getAdmin();
-            Hbase11xHelper.checkHbaseTable(admin,hTableName);
+            //Hbase11xHelper.checkHbaseTable(admin,hTableName);
             //参考HTable getBufferedMutator()
             bufferedMutator = hConnection.getBufferedMutator(
                     new BufferedMutatorParams(hTableName)

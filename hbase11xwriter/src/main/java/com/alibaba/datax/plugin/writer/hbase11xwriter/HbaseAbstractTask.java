@@ -71,7 +71,6 @@ public abstract class HbaseAbstractTask {
                     }
                 }
             }
-            this.bufferedMutator.flush();
             
         }catch (IOException e){
             throw DataXException.asDataXException(Hbase11xWriterErrorCode.PUT_HBASE_ERROR,e);

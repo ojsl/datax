@@ -47,26 +47,52 @@ public class Hbase11xHelper {
         String hbaseConfig = configuration.getString(Key.HBASE_CONFIG);
         org.apache.hadoop.conf.Configuration hConfiguration = Hbase11xHelper.getHbaseConfiguration(hbaseConfig);
 
-        hConfiguration.setInt(HConstants.HBASE_RPC_TIMEOUT_KEY, 200000);
-        hConfiguration.setInt(HConstants.HBASE_CLIENT_SCANNER_TIMEOUT_PERIOD, 200000);
-        hConfiguration.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 2000000);
+        hConfiguration.setInt(HConstants.HBASE_RPC_TIMEOUT_KEY, configuration.getInt(HConstants.HBASE_RPC_TIMEOUT_KEY,60000));
+        hConfiguration.setInt(HConstants.HBASE_CLIENT_SCANNER_TIMEOUT_PERIOD, configuration.getInt(HConstants.HBASE_CLIENT_SCANNER_TIMEOUT_PERIOD,60000));
+        hConfiguration.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, configuration.getInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT,60000));
         /*hConfiguration.set("hbase-site.xml",configuration.getString("hbasesite"));
         hConfiguration.set("hdfs-site.xml",configuration.getString("hdfssite"));
         hConfiguration.set("core-site.xml",configuration.getString("coresite"));
         hConfiguration.set("krb5.conf",configuration.getString("krb5conf"));
         hConfiguration.set("user.keytab",configuration.getString("kerberosKeytabFilePath"));*/
-
+        String hbaseSite = configuration.getString("hbasesite");
+        String hdfsSite = configuration.getString("hdfssite");
+        String coreSite = configuration.getString("coresite");
+        if(hbaseSite == null && hbaseSite.isEmpty()){
+            throw DataXException.asDataXException(Hbase11xWriterErrorCode.HBASESITE_NOTFOUND_ERROR,
+                    "hbasesite配置为空");
+        }
+        if(hdfsSite == null && hdfsSite.isEmpty()){
+            throw DataXException.asDataXException(Hbase11xWriterErrorCode.HDFSSITE_NOTFOUND_ERROR,
+                    "hdfssite配置为空");
+        }
+        if(coreSite == null && coreSite.isEmpty()){
+            throw DataXException.asDataXException(Hbase11xWriterErrorCode.CORESITE_NOTFOUND_ERROR,
+                    "coresite配置为空");
+        }
 
         hConfiguration.addResource(new Path(configuration.getString("hbasesite")));
         hConfiguration.addResource(new Path(configuration.getString("hdfssite")));
         hConfiguration.addResource(new Path(configuration.getString("coresite")));
 
-        if(configuration.getBool("haveKerberos") != null &&
-                configuration.getBool("haveKerberos")){
+        if(configuration.getBool("haveKerberos",false)){
 
             String userKeytabFile = configuration.getString("kerberosKeytabFilePath");
             String krb5File = configuration.getString("krb5conf");
             String kerberosPrincipal = configuration.getString("kerberosPrincipal");
+
+            if(userKeytabFile == null && userKeytabFile.isEmpty()){
+                throw DataXException.asDataXException(Hbase11xWriterErrorCode.USERKEYTABFILE_NOTFOUND_ERROR,
+                        "kerberosKeytabFilePath配置为空");
+            }
+            if(krb5File == null && krb5File.isEmpty()){
+                throw DataXException.asDataXException(Hbase11xWriterErrorCode.KRB5CONF_NOTFOUND_ERROR,
+                        "krb5conf配置为空");
+            }
+            if(kerberosPrincipal == null && kerberosPrincipal.isEmpty()){
+                throw DataXException.asDataXException(Hbase11xWriterErrorCode.KERBEROSPRINCIPAL_NOTFOUND_ERROR,
+                        "kerberosPrincipal配置为空");
+            }
 
             System.setProperty("java.security.krb5.conf", krb5File);
             System.setProperty("zookeeper.server.principal", "zookeeper/hadoop");

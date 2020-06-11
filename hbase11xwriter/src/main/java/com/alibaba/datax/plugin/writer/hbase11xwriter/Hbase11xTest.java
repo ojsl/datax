@@ -1,23 +1,30 @@
 package com.alibaba.datax.plugin.writer.hbase11xwriter;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.Time;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Hbase11xTest {
+    private final static Logger LOG = LoggerFactory.getLogger(Hbase11xTest.class);
+
     public static void main(String[] args){
 
         try {
+            System.setProperty("sun.security.krb5.debug","true");
             Configuration hConfiguration = HBaseConfiguration.create();
             //hConfiguration.set("hbase.zookeeper.property.clientPort","2181");
+            String hbasesite = "/Users/haizhi/Downloads/hive/hbase-site.xml";
 
-
-            hConfiguration.addResource("/Users/haizhi/Downloads/hive/hbase-site.xml");
+            hConfiguration.addResource(new Path(hbasesite));
             hConfiguration.addResource("/Users/haizhi/Downloads/hive/hdfs-site.xml");
             hConfiguration.addResource("/Users/haizhi/Downloads/hive/core-site.xml");
+            //hConfiguration.set("hbase-site.xml","/Users/haizhi/Downloads/hive/hbase-site.xml");
 
             hConfiguration.set("hbase.zookeeper.quorum","cdh01:2181,cdh51401:2181,cdh51402:2181");
             hConfiguration.set("hbase.rootdir","/hbase");

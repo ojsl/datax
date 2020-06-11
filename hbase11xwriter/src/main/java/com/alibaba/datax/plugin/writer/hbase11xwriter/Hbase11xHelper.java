@@ -50,10 +50,16 @@ public class Hbase11xHelper {
         hConfiguration.setInt(HConstants.HBASE_RPC_TIMEOUT_KEY, 200000);
         hConfiguration.setInt(HConstants.HBASE_CLIENT_SCANNER_TIMEOUT_PERIOD, 200000);
         hConfiguration.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 2000000);
+        /*hConfiguration.set("hbase-site.xml",configuration.getString("hbasesite"));
+        hConfiguration.set("hdfs-site.xml",configuration.getString("hdfssite"));
+        hConfiguration.set("core-site.xml",configuration.getString("coresite"));
+        hConfiguration.set("krb5.conf",configuration.getString("krb5conf"));
+        hConfiguration.set("user.keytab",configuration.getString("kerberosKeytabFilePath"));*/
 
-        hConfiguration.addResource(configuration.getString("hbasesite"));
-        hConfiguration.addResource(configuration.getString("hdfssite"));
-        hConfiguration.addResource(configuration.getString("coresite"));
+
+        hConfiguration.addResource(new Path(configuration.getString("hbasesite")));
+        hConfiguration.addResource(new Path(configuration.getString("hdfssite")));
+        hConfiguration.addResource(new Path(configuration.getString("coresite")));
 
         if(configuration.getBool("haveKerberos") != null &&
                 configuration.getBool("haveKerberos")){

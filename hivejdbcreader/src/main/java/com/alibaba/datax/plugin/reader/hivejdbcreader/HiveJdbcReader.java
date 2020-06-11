@@ -247,7 +247,6 @@ public class HiveJdbcReader  extends Reader {
                             record.addColumn(new StringColumn(rs.getObject(i).toString()));
                             break;
 
-
                         default:
                             throw DataXException
                                     .asDataXException(

@@ -24,8 +24,6 @@
         <Target>System.err</Target>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
         </filter>
         <encoder>
             <pattern>%msg%n
@@ -165,6 +163,7 @@
 
     <root level="${loglevel:-INFO}">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDERR" />
         <appender-ref ref="FILE" />
         <appender-ref ref="BAD_RECORD_FILE" />
         <!--

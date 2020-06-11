@@ -1,4 +1,4 @@
-# DataX HdfsReader 插件文档
+# DataX HiveJdecReader 插件文档
 
 
 ------------
@@ -308,11 +308,7 @@ boolean captureRawRecord = true;
 
 ### 3.3 类型转换
 
-由于textfile和orcfile文件表的元数据信息由Hive维护并存放在Hive自己维护的数据库（如mysql）中，目前HdfsReader不支持对Hive元数
-
-据数据库进行访问查询，因此用户在进行类型转换的时候，必须指定数据类型，如果用户配置的column为"*"，则所有column默认转换为
-
-string类型。HdfsReader提供了类型转换的建议表如下：
+数据源的数据类型由sql result metadata中获取。HiveJdbcReader提供了类型转换的建议表如下：
 
 | DataX 内部类型| Hive表 数据类型    |
 | -------- | -----  |
